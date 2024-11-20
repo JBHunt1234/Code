@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Supplier Search Results{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="bg-faded rounded p-5">
+                <h2 class="section-heading mb-4">
+                    <span class="section-heading-upper">Search Results</span>
+                    <span class="section-heading-lower">Suppliers by City</span>
+                </h2>
+                
+                {% if suppliersData %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>SupplierID</th>
+                            <th>Company Name</th>
+                            <th>City</th>
+                            <th>Country</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for supplier in suppliersData %}
+                        <tr>
+                            <td>{{ supplier.SupplierID }}</td>
+                            <td>{{ supplier.CompanyName }}</td>
+                            <td>{{ supplier.City }}</td>
+                            <td>{{ supplier.Country }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="alert alert-info">No suppliers found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

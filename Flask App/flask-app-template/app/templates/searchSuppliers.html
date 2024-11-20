@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Search Suppliers{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-7 mx-auto">
+            <div class="bg-faded rounded p-5">
+                <h2 class="section-heading mb-4">
+                    <span class="section-heading-upper">Supplier Search</span>
+                    <span class="section-heading-lower">Search suppliers by city</span>
+                </h2>
+                
+                <form>
+                    <div class="form-group">
+                        <label for="citySelect" class="mb-2">Search suppliers by city</label>
+                        <select id="citySelect" class="form-control">
+                            <option value="">Select a City</option>
+                            <option value="London">London</option>
+                            <option value="Tokyo">Tokyo</option>
+                            <option value="Berlin">Berlin</option>
+                            <option value="Sydney">Sydney</option>
+                        </select>
+                    </div>
+                </form>
+                
+                <div id="searchResults" class="mt-4">
+                    <!-- Placeholder for search results -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('citySelect').addEventListener('change', function() {
+    const selectedCity = this.value;
+    const resultsDiv = document.getElementById('searchResults');
+    
+    if (selectedCity) {
+        fetch(`/get_suppliers_by_city?city=${selectedCity}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    let tableHtml = `
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>SupplierID</th>
+                                    <th>CompanyName</th>
+                                    <th>City</th>
+                                    <th>Country</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.forEach(supplier => {
+                        tableHtml += `
+                            <tr>
+                                <td>${supplier.SupplierID}</td>
+                                <td>${supplier.CompanyName}</td>
+                                <td>${supplier.City}</td>
+                                <td>${supplier.Country}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHtml += `
+                            </tbody>
+                        </table>
+                    `;
+                    
+                    resultsDiv.innerHTML = tableHtml;
+                } else {
+                    resultsDiv.innerHTML = '<p class="alert alert-info">No suppliers found for the selected city.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultsDiv.innerHTML = '<p class="alert alert-danger">An error occurred while fetching results.</p>';
+            });
+    } else {
+        resultsDiv.innerHTML = '';
+    }
+});
+</script>
+{% endblock content %}
